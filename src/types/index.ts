@@ -99,3 +99,41 @@ export interface CrearConsultaDTO {
   mensaje: string;
   cliente_id?: string;
 }
+
+export interface ProductoInsumoItem {
+  id?: string;
+  insumo_id: string;
+  insumo_codigo?: string;
+  insumo_nombre?: string;
+  unidad_medida?: string;
+  costo_unitario?: number;
+  cantidad_requerida: number;
+}
+
+export interface Producto {
+  id: string;
+  codigo: string;
+  nombre: string;
+  descripcion?: string;
+  categoria: string;
+  precio_base: number;
+  tiempo_estimado_horas: number;
+  imagen_url?: string;
+  activo: boolean;
+  receta: ProductoInsumoItem[];
+  costo_insumos_total: number;
+  margen_estimado: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CrearProductoDTO {
+  codigo?: string;
+  nombre: string;
+  descripcion?: string;
+  categoria: string;
+  precio_base: number;
+  tiempo_estimado_horas: number;
+  imagen_url?: string;
+  receta: { insumo_id: string; cantidad_requerida: number }[];
+}
