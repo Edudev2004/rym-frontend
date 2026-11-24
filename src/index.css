@@ -3,55 +3,59 @@
 @tailwind utilities;
 
 /* =============================================================================
-   VARIABLES GLOBALES OFICIALES EN :ROOT — R&M PERSONALIZA
-   Paleta Estricta: Negro (#000000 / #0A0A0A), Blanco (#FFFFFF) y Dorado (#D4AF37)
-   Queda terminantemente prohibido el uso de colores ajenos (azules, verdes, morados, etc.)
+   PALETA ESTRICTA: BLANCO, NEGRO Y DORADO — R&M PERSONALIZA
+   Variables Maestras en :root
    ============================================================================= */
 :root {
-  /* Dorado Oficial R&M Personaliza */
-  --color-gold: #D4AF37;
-  --color-gold-hover: #E5C158;
-  --color-gold-dark: #B88E23;
-  --color-gold-light: #FBF8EE;
-  --color-gold-glow: rgba(212, 175, 55, 0.25);
-  --color-gold-border: rgba(212, 175, 55, 0.35);
+  /* Dorado Oficial */
+  --gold-primary: #D4AF37;
+  --gold-hover: #E5C158;
+  --gold-dark: #B88E23;
+  --gold-bg-subtle: rgba(212, 175, 55, 0.12);
+  --gold-border: rgba(212, 175, 55, 0.40);
 
-  /* Negro Carbón / Fondos y Menús */
-  --color-black: #000000;
-  --color-black-pure: #000000;
-  --color-dark-bg: #0A0A0C;
-  --color-card-bg: #11141C;
-  --color-card-hover: #171B26;
-  --color-border: #222634;
+  /* Negro Carbón / Fondos */
+  --bg-main: #07090E;
+  --bg-sidebar: #0A0A0C;
+  --bg-card: #12151E;
+  --border-dark: #242938;
 
-  /* Blanco y Contrastes */
-  --color-white: #FFFFFF;
-  --color-white-soft: #F9FAFB;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #D4D4D8;
-  --color-text-muted: #9CA3AF;
+  /* Blanco */
+  --text-white: #FFFFFF;
+  --text-muted: #9CA3AF;
 }
 
-/* Clases utilitarias directas vinculadas a :root */
-.bg-brand-gold {
-  background-color: var(--color-gold) !important;
+/* Clases utilitarias directas con colores fijos */
+.gold-primary {
+  color: #D4AF37 !important;
 }
 
-.text-brand-gold {
-  color: var(--color-gold) !important;
+.bg-gold-primary {
+  background-color: #D4AF37 !important;
 }
 
-.border-brand-gold {
-  border-color: var(--color-gold) !important;
+.border-gold-primary {
+  border-color: #D4AF37 !important;
 }
 
-/* Estilos de scrollbar y contenedor */
+/* Botón dorado oficial */
+.btn-gold {
+  background-color: #D4AF37 !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  transition: all 0.2s ease !important;
+}
+.btn-gold:hover {
+  background-color: #E5C158 !important;
+}
+
+/* Base global */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #07090E;
-  color: #FFFFFF;
+  background-color: #07090E !important;
+  color: #FFFFFF !important;
 }
 
 ::-webkit-scrollbar {
