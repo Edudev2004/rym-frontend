@@ -124,53 +124,53 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
             <button
               type="button"
               onClick={() => seleccionarRolRapido('admin@rympersonaliza.pe', 'ADMINISTRADOR')}
-              className={`p-2 rounded-xl border text-left transition-all ${
+              className={`p-2.5 rounded-xl border text-left transition-all ${
                 correo === 'admin@rympersonaliza.pe'
-                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
-                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-brand-500/20 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-[#222634] text-slate-400 hover:text-white hover:border-brand-500/40'
               }`}
             >
-              <div className="font-bold text-[11px] text-brand-400">ADMINISTRADOR</div>
-              <div className="truncate text-[10px]">Rommel Navarro</div>
+              <div className="font-black text-[11px] text-brand-500">ADMINISTRADOR</div>
+              <div className="truncate text-[10px] text-slate-300">Rommel Navarro</div>
             </button>
 
             <button
               type="button"
               onClick={() => seleccionarRolRapido('marketing@rympersonaliza.pe', 'MARKETING')}
-              className={`p-2 rounded-xl border text-left transition-all ${
+              className={`p-2.5 rounded-xl border text-left transition-all ${
                 correo === 'marketing@rympersonaliza.pe'
-                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
-                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-brand-500/20 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-[#222634] text-slate-400 hover:text-white hover:border-brand-500/40'
               }`}
             >
-              <div className="font-bold text-[11px] text-amber-300">MARKETING</div>
-              <div className="truncate text-[10px]">Valeria Rios</div>
+              <div className="font-black text-[11px] text-brand-500">MARKETING</div>
+              <div className="truncate text-[10px] text-slate-300">Valeria Rios</div>
             </button>
 
             <button
               type="button"
               onClick={() => seleccionarRolRapido('diseno@rympersonaliza.pe', 'DISENADOR')}
-              className={`p-2 rounded-xl border text-left transition-all ${
+              className={`p-2.5 rounded-xl border text-left transition-all ${
                 correo === 'diseno@rympersonaliza.pe'
-                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
-                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-brand-500/20 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-[#222634] text-slate-400 hover:text-white hover:border-brand-500/40'
               }`}
             >
-              <div className="font-bold text-[11px] text-brand-300">DISEÑADOR</div>
-              <div className="truncate text-[10px]">Carlos Mendez</div>
+              <div className="font-black text-[11px] text-brand-500">DISEÑADOR</div>
+              <div className="truncate text-[10px] text-slate-300">Carlos Mendez</div>
             </button>
 
             <button
               type="button"
               onClick={() => seleccionarRolRapido('produccion@rympersonaliza.pe', 'OPERADOR')}
-              className={`p-2 rounded-xl border text-left transition-all ${
+              className={`p-2.5 rounded-xl border text-left transition-all ${
                 correo === 'produccion@rympersonaliza.pe'
-                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
-                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-brand-500/20 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-[#222634] text-slate-400 hover:text-white hover:border-brand-500/40'
               }`}
             >
-              <div className="font-bold text-[11px] text-emerald-400">OPERADOR</div>
-              <div className="truncate text-[10px]">Jorge Lopez</div>
+              <div className="font-black text-[11px] text-brand-500">OPERADOR</div>
+              <div className="truncate text-[10px] text-slate-300">Jorge Lopez</div>
             </button>
           </div>
         </div>

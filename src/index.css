@@ -2,22 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Estilos mobile-first globales */
+/* =============================================================================
+   VARIABLES GLOBALES OFICIALES EN :ROOT — R&M PERSONALIZA
+   Paleta Estricta: Negro (#000000 / #0A0A0A), Blanco (#FFFFFF) y Dorado (#D4AF37)
+   Queda terminantemente prohibido el uso de colores ajenos (azules, verdes, morados, etc.)
+   ============================================================================= */
+:root {
+  /* Dorado Oficial R&M Personaliza */
+  --color-gold: #D4AF37;
+  --color-gold-hover: #E5C158;
+  --color-gold-dark: #B88E23;
+  --color-gold-light: #FBF8EE;
+  --color-gold-glow: rgba(212, 175, 55, 0.25);
+  --color-gold-border: rgba(212, 175, 55, 0.35);
+
+  /* Negro Carbón / Fondos y Menús */
+  --color-black: #000000;
+  --color-black-pure: #000000;
+  --color-dark-bg: #0A0A0C;
+  --color-card-bg: #11141C;
+  --color-card-hover: #171B26;
+  --color-border: #222634;
+
+  /* Blanco y Contrastes */
+  --color-white: #FFFFFF;
+  --color-white-soft: #F9FAFB;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #D4D4D8;
+  --color-text-muted: #9CA3AF;
+}
+
+/* Clases utilitarias directas vinculadas a :root */
+.bg-brand-gold {
+  background-color: var(--color-gold) !important;
+}
+
+.text-brand-gold {
+  color: var(--color-gold) !important;
+}
+
+.border-brand-gold {
+  border-color: var(--color-gold) !important;
+}
+
+/* Estilos de scrollbar y contenedor */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #07090E;
+  color: #FFFFFF;
 }
 
-/* Scrollbars sutiles para móvil y desktop */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #0A0A0C;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #D4AF37;
   border-radius: 3px;
 }
