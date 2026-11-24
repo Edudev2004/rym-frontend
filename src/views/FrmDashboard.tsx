@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import { DashboardMetricas, AlertaStock } from '../types';
+import { GoldSpinner } from '../components/GoldSpinner';
 import {
   Clock,
   Hammer,
@@ -17,18 +18,24 @@ interface Props {
 export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
   const [metricas, setMetricas] = useState<DashboardMetricas | null>(null);
   const [alertas, setAlertas] = useState<AlertaStock[]>([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     cargarDatos();
   }, []);
 
   const cargarDatos = async () => {
-    const [m, a] = await Promise.all([
-      apiService.getMetricasDashboard(),
-      apiService.getAlertas()
-    ]);
-    setMetricas(m);
-    setAlertas(a);
+    setCargando(true);
+    try {
+      const [m, a] = await Promise.all([
+        apiService.getMetricasDashboard(),
+        apiService.getAlertas()
+      ]);
+      setMetricas(m);
+      setAlertas(a);
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -37,10 +44,16 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 text-slate-900 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <span className="text-xs font-bold bg-[#D4AF37]/15 text-[#997A15] border border-[#D4AF37]/40 px-3.5 py-1 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
-          MVP R&M Personaliza — Fase 1
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold bg-[#D4AF37]/15 text-[#997A15] border border-[#D4AF37]/40 px-3.5 py-1 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
+            MVP R&M Personaliza — Fase 1
+          </span>
+          {cargando && (
+            <GoldSpinner size="sm" texto="Sincronizando..." />
+          )}
+        </div>
+
         <h1 className="text-2xl sm:text-3xl font-black mt-3 tracking-tight text-slate-900">
           Panel de Control Operativo
         </h1>
@@ -68,9 +81,13 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
           </div>
           <div>
             <p className="text-xs text-slate-500 font-medium">Pedidos Pendientes</p>
-            <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              {metricas?.pedidos_pendientes ?? 0}
-            </p>
+            {cargando ? (
+              <div className="mt-1"><GoldSpinner size="xs" /></div>
+            ) : (
+              <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+                {metricas?.pedidos_pendientes ?? 0}
+              </p>
+            )}
           </div>
         </div>
 
@@ -81,9 +98,13 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
           </div>
           <div>
             <p className="text-xs text-slate-500 font-medium">En Producción</p>
-            <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              {metricas?.pedidos_en_produccion ?? 0}
-            </p>
+            {cargando ? (
+              <div className="mt-1"><GoldSpinner size="xs" /></div>
+            ) : (
+              <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+                {metricas?.pedidos_en_produccion ?? 0}
+              </p>
+            )}
           </div>
         </div>
 
@@ -94,9 +115,13 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
           </div>
           <div>
             <p className="text-xs text-slate-500 font-medium">Insumos en Alerta</p>
-            <p className="text-xl sm:text-2xl font-black text-[#997A15] mt-0.5">
-              {alertas.length}
-            </p>
+            {cargando ? (
+              <div className="mt-1"><GoldSpinner size="xs" /></div>
+            ) : (
+              <p className="text-xl sm:text-2xl font-black text-[#997A15] mt-0.5">
+                {alertas.length}
+              </p>
+            )}
           </div>
         </div>
 
@@ -107,9 +132,13 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
           </div>
           <div>
             <p className="text-xs text-slate-500 font-medium">Ventas del Mes</p>
-            <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              S/ {metricas?.total_ventas_mes.toFixed(2) ?? '0.00'}
-            </p>
+            {cargando ? (
+              <div className="mt-1"><GoldSpinner size="xs" /></div>
+            ) : (
+              <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+                S/ {metricas?.total_ventas_mes.toFixed(2) ?? '0.00'}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -131,7 +160,11 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
           </button>
         </div>
 
-        {alertas.length === 0 ? (
+        {cargando ? (
+          <div className="py-8 flex justify-center">
+            <GoldSpinner size="md" texto="Cargando alertas de inventario..." />
+          </div>
+        ) : alertas.length === 0 ? (
           <p className="text-xs text-slate-400 py-6 text-center">
             Todos los insumos cuentan con saldo superior al stock mínimo de seguridad.
           </p>

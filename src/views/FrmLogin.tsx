@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { apiService } from '../services/api';
 import { Usuario } from '../types';
+import { GoldSpinner } from '../components/GoldSpinner';
 import { Lock, Mail, ShieldCheck, ArrowRight, UserCheck } from 'lucide-react';
 
 interface Props {
@@ -110,8 +111,17 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
             disabled={cargando}
             className="w-full py-3.5 bg-[#D4AF37] hover:bg-[#E5C158] text-black font-black rounded-xl text-sm transition-all shadow-lg shadow-[#D4AF37]/25 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
           >
-            {cargando ? 'Iniciando sesión...' : 'Ingresar al Sistema'}
-            <ArrowRight className="w-4 h-4 stroke-[3]" />
+            {cargando ? (
+              <span className="inline-flex items-center gap-2">
+                <GoldSpinner size="xs" />
+                <span>Iniciando sesión...</span>
+              </span>
+            ) : (
+              <>
+                <span>Ingresar al Sistema</span>
+                <ArrowRight className="w-4 h-4 stroke-[3]" />
+              </>
+            )}
           </button>
         </form>
 

@@ -2,7 +2,7 @@
  * Cliente HTTP y Servicio de Integración con Backend FastAPI
  * Incluye fallback inteligente para pruebas frontend autónomas.
  */
-import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario } from '../types';
+import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -59,6 +59,69 @@ export const apiService = {
       // Backend offline: usar datos demo
     }
     return DEMO_INSUMOS;
+  },
+
+  async crearInsumo(data: CrearInsumoDTO): Promise<Insumo> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/kardex/insumos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback local
+    }
+
+    // Autogeneración de código en frontend si backend no responde
+    const palabras = data.nombre.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase().split(/\s+/).filter(w => w.length >= 3);
+    const prefix = palabras.length > 0 ? palabras[0].substring(0, 3) : 'GEN';
+    const existentes = DEMO_INSUMOS.filter(i => i.codigo.startsWith(`INS-${prefix}-`));
+    const nextNum = existentes.length + 1;
+    const codigoFinal = data.codigo?.trim() || `INS-${prefix}-${String(nextNum).padStart(2, '0')}`;
+
+    const stockInicial = Number(data.stock_inicial || 0);
+    const stockMinimo = Number(data.stock_minimo || 5);
+    const estadoAlerta = stockInicial === 0
+      ? 'CRITICO_AGOTADO'
+      : (stockInicial <= stockMinimo / 2 ? 'CRITICO_ROJO' : (stockInicial <= stockMinimo ? 'ALERTA_AMARILLO' : 'NORMAL'));
+
+    const nuevo: Insumo = {
+      id: `demo-${Date.now()}`,
+      codigo: codigoFinal,
+      nombre: data.nombre.trim(),
+      unidad_medida: data.unidad_medida,
+      stock_actual: stockInicial,
+      stock_minimo: stockMinimo,
+      costo_unitario: Number(data.costo_unitario || 0),
+      descripcion: data.descripcion,
+      esta_en_alerta: stockInicial <= stockMinimo,
+      estado_alerta: estadoAlerta,
+      activo: true,
+      created_at: new Date().toISOString()
+    };
+    DEMO_INSUMOS.push(nuevo);
+    return nuevo;
+  },
+
+  async eliminarInsumo(insumoId: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/kardex/insumos/${insumoId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback
+    }
+
+    const idx = DEMO_INSUMOS.findIndex(i => i.id === insumoId);
+    if (idx !== -1) {
+      DEMO_INSUMOS.splice(idx, 1);
+      return true;
+    }
+    return false;
   },
 
   async getAlertas(): Promise<AlertaStock[]> {

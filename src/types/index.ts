@@ -31,6 +31,16 @@ export interface Insumo {
   created_at?: string;
 }
 
+export interface CrearInsumoDTO {
+  codigo?: string;
+  nombre: string;
+  descripcion?: string;
+  unidad_medida: string;
+  stock_inicial: number;
+  stock_minimo: number;
+  costo_unitario: number;
+}
+
 export interface AlertaStock {
   id: string;
   codigo: string;
