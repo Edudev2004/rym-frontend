@@ -2,7 +2,7 @@
  * Cliente HTTP y Servicio de Integración con Backend FastAPI
  * Incluye fallback inteligente para pruebas frontend autónomas.
  */
-import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO, Consulta, CrearConsultaDTO, Producto, ProductoInsumoItem, CrearProductoDTO } from '../types';
+import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO, Consulta, CrearConsultaDTO, Producto, ProductoInsumoItem, CrearProductoDTO, Cliente, CrearClienteDTO } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -137,6 +137,48 @@ const DEMO_PRODUCTOS: Producto[] = [
         cantidad_requerida: 1.0
       }
     ]
+  }
+];
+
+const DEMO_CLIENTES: Cliente[] = [
+  {
+    id: "11111111-1111-1111-1111-111111111101",
+    tipo_documento: "DNI",
+    numero_documento: "72849102",
+    nombres: "Rommel Eduardo",
+    apellidos: "Navarro Domínguez",
+    nombre_completo: "Rommel Eduardo Navarro Domínguez",
+    telefono: "987654321",
+    email: "rommel.navarro@gmail.com",
+    direccion: "Av. Perú 2450, San Martín de Porres, Lima",
+    canal_frecuente: "WHATSAPP",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "11111111-1111-1111-1111-111111111102",
+    tipo_documento: "DNI",
+    numero_documento: "45678912",
+    nombres: "María Elena",
+    apellidos: "Vásquez Cornejo",
+    nombre_completo: "María Elena Vásquez Cornejo",
+    telefono: "912345678",
+    email: "maria.vasquez@outlook.com",
+    direccion: "Jr. Las Gardenias 123, Los Olivos, Lima",
+    canal_frecuente: "WHATSAPP",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "11111111-1111-1111-1111-111111111103",
+    tipo_documento: "RUC",
+    numero_documento: "20601234567",
+    nombres: "Inversiones & Eventos Perú S.A.C.",
+    apellidos: "",
+    nombre_completo: "Inversiones & Eventos Perú S.A.C.",
+    telefono: "998877665",
+    email: "contacto@eventosperu.pe",
+    direccion: "Av. Universitaria 3450, San Martín de Porres, Lima",
+    canal_frecuente: "WHATSAPP",
+    created_at: new Date().toISOString()
   }
 ];
 
@@ -532,6 +574,119 @@ export const apiService = {
     const idx = DEMO_PRODUCTOS.findIndex(p => p.id === id);
     if (idx !== -1) {
       DEMO_PRODUCTOS.splice(idx, 1);
+      return true;
+    }
+    return false;
+  },
+
+  // Directorio de Clientes (Fase 2)
+  async getClientes(busqueda?: string): Promise<Cliente[]> {
+    try {
+      const url = new URL(`${API_BASE_URL}/clientes`);
+      if (busqueda && busqueda.trim()) url.searchParams.set('q', busqueda.trim());
+      const res = await fetch(url.toString());
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    if (!busqueda || !busqueda.trim()) return DEMO_CLIENTES;
+    const q = busqueda.trim().toLowerCase();
+    return DEMO_CLIENTES.filter(c =>
+      c.numero_documento.toLowerCase().includes(q) ||
+      c.nombres.toLowerCase().includes(q) ||
+      (c.apellidos && c.apellidos.toLowerCase().includes(q)) ||
+      c.telefono.toLowerCase().includes(q)
+    );
+  },
+
+  async getClientePorDocumento(tipo: string, numero: string): Promise<Cliente | null> {
+    try {
+      const url = new URL(`${API_BASE_URL}/clientes/buscar/documento`);
+      url.searchParams.set('tipo', tipo);
+      url.searchParams.set('numero', numero);
+      const res = await fetch(url.toString());
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const c = DEMO_CLIENTES.find(cli => cli.tipo_documento.toUpperCase() === tipo.toUpperCase() && cli.numero_documento === numero.trim());
+    return c || null;
+  },
+
+  async crearCliente(data: CrearClienteDTO): Promise<Cliente> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/clientes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const nombreCompleto = data.apellidos && data.apellidos.trim()
+      ? `${data.nombres.trim()} ${data.apellidos.trim()}`
+      : data.nombres.trim();
+
+    const nuevo: Cliente = {
+      id: `cli-${Date.now()}`,
+      tipo_documento: data.tipo_documento,
+      numero_documento: data.numero_documento.trim(),
+      nombres: data.nombres.trim(),
+      apellidos: data.apellidos?.trim() || '',
+      nombre_completo: nombreCompleto,
+      telefono: data.telefono.trim(),
+      email: data.email?.trim() || undefined,
+      direccion: data.direccion?.trim() || undefined,
+      canal_frecuente: data.canal_frecuente || 'WHATSAPP',
+      created_at: new Date().toISOString()
+    };
+    DEMO_CLIENTES.unshift(nuevo);
+    return nuevo;
+  },
+
+  async actualizarCliente(id: string, data: Partial<CrearClienteDTO>): Promise<Cliente> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/clientes/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const c = DEMO_CLIENTES.find(cli => cli.id === id);
+    if (c) {
+      if (data.nombres) c.nombres = data.nombres;
+      if (data.apellidos !== undefined) c.apellidos = data.apellidos;
+      if (data.telefono) c.telefono = data.telefono;
+      if (data.email !== undefined) c.email = data.email;
+      if (data.direccion !== undefined) c.direccion = data.direccion;
+      if (data.canal_frecuente) c.canal_frecuente = data.canal_frecuente;
+      c.nombre_completo = c.apellidos ? `${c.nombres} ${c.apellidos}` : c.nombres;
+      return c;
+    }
+    throw new Error('Cliente no encontrado');
+  },
+
+  async eliminarCliente(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/clientes/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback
+    }
+
+    const idx = DEMO_CLIENTES.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      DEMO_CLIENTES.splice(idx, 1);
       return true;
     }
     return false;

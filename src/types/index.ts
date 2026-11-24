@@ -137,3 +137,30 @@ export interface CrearProductoDTO {
   imagen_url?: string;
   receta: { insumo_id: string; cantidad_requerida: number }[];
 }
+
+export type TipoDocumentoIdentidad = 'DNI' | 'RUC' | 'CE' | 'PASAPORTE';
+
+export interface Cliente {
+  id: string;
+  tipo_documento: TipoDocumentoIdentidad;
+  numero_documento: string;
+  nombres: string;
+  apellidos?: string;
+  nombre_completo: string;
+  telefono: string;
+  email?: string;
+  direccion?: string;
+  canal_frecuente: CanalContacto;
+  created_at?: string;
+}
+
+export interface CrearClienteDTO {
+  tipo_documento: TipoDocumentoIdentidad;
+  numero_documento: string;
+  nombres: string;
+  apellidos?: string;
+  telefono: string;
+  email?: string;
+  direccion?: string;
+  canal_frecuente?: CanalContacto;
+}
