@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FrmDashboard } from './views/FrmDashboard';
 import { FrmKardex } from './views/FrmKardex';
 import { FrmConsultas } from './views/FrmConsultas';
+import { FrmProductos } from './views/FrmProductos';
 import { FrmLogin } from './views/FrmLogin';
 import { Navbar } from './components/Navbar';
 import { Usuario, AlertaStock } from './types';
@@ -10,6 +11,7 @@ import {
   LayoutDashboard,
   Package,
   MessageSquare,
+  Sparkles,
   ShoppingCart,
   Hammer,
   Receipt,
@@ -23,7 +25,7 @@ export default function App() {
     const saved = localStorage.getItem('rym_usuario');
     return saved ? JSON.parse(saved) : null;
   });
-  const [vistaActual, setVistaActual] = useState<'dashboard' | 'kardex' | 'consultas' | 'pedidos' | 'produccion' | 'comprobantes'>('dashboard');
+  const [vistaActual, setVistaActual] = useState<'dashboard' | 'kardex' | 'consultas' | 'productos' | 'pedidos' | 'produccion' | 'comprobantes'>('dashboard');
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
   const [alertas, setAlertas] = useState<AlertaStock[]>([]);
 
@@ -62,6 +64,7 @@ export default function App() {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'consultas', label: 'Consultas (CU01)', icon: MessageSquare },
     { id: 'kardex', label: 'Kardex / Insumos', icon: Package },
+    { id: 'productos', label: 'Catálogo & Recetas', icon: Sparkles },
     { id: 'pedidos', label: 'Pedidos (CU02)', icon: ShoppingCart, badge: 'Fase 3' },
     { id: 'produccion', label: 'Producción (CU05)', icon: Hammer, badge: 'Fase 3' },
     { id: 'comprobantes', label: 'Facturación (CU08)', icon: Receipt, badge: 'Fase 4' },
@@ -117,7 +120,7 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'dashboard' || item.id === 'kardex' || item.id === 'consultas') {
+                    if (item.id === 'dashboard' || item.id === 'kardex' || item.id === 'consultas' || item.id === 'productos') {
                       setVistaActual(item.id as any);
                     } else {
                       alert(`El módulo '${item.label}' corresponde a la ${item.badge} del roadmap.`);
@@ -193,37 +196,49 @@ export default function App() {
           {vistaActual === 'kardex' && (
             <FrmKardex onInsumoActualizado={cargarAlertas} />
           )}
+          {vistaActual === 'productos' && (
+            <FrmProductos onNavigate={(v) => setVistaActual(v as any)} />
+          )}
         </main>
       </div>
 
       {/* Bottom Navigation Mobile — Negro y Dorado */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0A0A0C] border-t border-[#1E2028] px-3 py-2 z-30 flex justify-around shadow-2xl">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0A0A0C] border-t border-[#1E2028] px-2 py-2 z-30 flex justify-around shadow-2xl">
         <button
           onClick={() => setVistaActual('dashboard')}
-          className={`flex flex-col items-center gap-1 text-[11px] font-medium py-1 px-3 rounded-lg transition-colors cursor-pointer ${
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium py-1 px-2 rounded-lg transition-colors cursor-pointer ${
             vistaActual === 'dashboard' ? 'text-[#D4AF37] font-bold' : 'text-slate-400'
           }`}
         >
-          <LayoutDashboard className="w-5 h-5" />
+          <LayoutDashboard className="w-4 h-4" />
           <span>Inicio</span>
         </button>
         <button
           onClick={() => setVistaActual('consultas')}
-          className={`flex flex-col items-center gap-1 text-[11px] font-medium py-1 px-3 rounded-lg transition-colors cursor-pointer ${
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium py-1 px-2 rounded-lg transition-colors cursor-pointer ${
             vistaActual === 'consultas' ? 'text-[#D4AF37] font-bold' : 'text-slate-400'
           }`}
         >
-          <MessageSquare className="w-5 h-5" />
+          <MessageSquare className="w-4 h-4" />
           <span>Consultas</span>
         </button>
         <button
           onClick={() => setVistaActual('kardex')}
-          className={`flex flex-col items-center gap-1 text-[11px] font-medium py-1 px-3 rounded-lg transition-colors cursor-pointer ${
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium py-1 px-2 rounded-lg transition-colors cursor-pointer ${
             vistaActual === 'kardex' ? 'text-[#D4AF37] font-bold' : 'text-slate-400'
           }`}
         >
-          <Package className="w-5 h-5" />
+          <Package className="w-4 h-4" />
           <span>Kardex</span>
+        </button>
+        <button
+          onClick={() => setVistaActual('productos')}
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium py-1 px-2 rounded-lg transition-colors cursor-pointer ${
+            vistaActual === 'productos' ? 'text-[#D4AF37] font-bold' : 'text-slate-400'
+          }`}
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Catálogo</span>
         </button>
       </nav>
     </div>

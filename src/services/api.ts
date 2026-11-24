@@ -2,7 +2,7 @@
  * Cliente HTTP y Servicio de Integración con Backend FastAPI
  * Incluye fallback inteligente para pruebas frontend autónomas.
  */
-import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO, Consulta, CrearConsultaDTO } from '../types';
+import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO, Consulta, CrearConsultaDTO, Producto, ProductoInsumoItem, CrearProductoDTO } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -78,6 +78,65 @@ const DEMO_CONSULTAS: Consulta[] = [
     estado: "ATENDIDA",
     fecha_recepcion: new Date(Date.now() - 3600000 * 24).toISOString(),
     fecha_atencion: new Date(Date.now() - 3600000 * 20).toISOString()
+  }
+];
+
+// Productos y recetas iniciales de demostración
+const DEMO_PRODUCTOS: Producto[] = [
+  {
+    id: "33333333-3333-3333-3333-333333333301",
+    codigo: "PROD-TAZ-01",
+    nombre: "Taza Mágica Personalizada 11oz",
+    descripcion: "Taza de cerámica que revela diseño con calor",
+    categoria: "SUBLIMADOS",
+    precio_base: 22.00,
+    tiempo_estimado_horas: 24,
+    activo: true,
+    costo_insumos_total: 9.20,
+    margen_estimado: 12.80,
+    receta: [
+      {
+        id: "pi-001",
+        insumo_id: "22222222-2222-2222-2222-222222222202",
+        insumo_codigo: "INS-TAZ-02",
+        insumo_nombre: "Taza Mágica Negra 11oz",
+        unidad_medida: "UND",
+        costo_unitario: 8.00,
+        cantidad_requerida: 1.0
+      },
+      {
+        id: "pi-002",
+        insumo_id: "22222222-2222-2222-2222-222222222205",
+        insumo_codigo: "INS-CAJ-01",
+        insumo_nombre: "Caja Cartón Microcorrugado Taza",
+        unidad_medida: "UND",
+        costo_unitario: 1.20,
+        cantidad_requerida: 1.0
+      }
+    ]
+  },
+  {
+    id: "33333333-3333-3333-3333-333333333302",
+    codigo: "PROD-POL-01",
+    nombre: "Polo Estampado Algodón 20/1",
+    descripcion: "Prenda personalizada con vinil o transfer DTF",
+    categoria: "PRENDAS",
+    precio_base: 35.00,
+    tiempo_estimado_horas: 48,
+    activo: true,
+    costo_insumos_total: 12.00,
+    margen_estimado: 23.00,
+    receta: [
+      {
+        id: "pi-003",
+        insumo_id: "22222222-2222-2222-2222-222222222206",
+        insumo_codigo: "INS-POL-01",
+        insumo_nombre: "Polo Algodón 20/1 Blanco Talla M",
+        unidad_medida: "UND",
+        costo_unitario: 12.00,
+        cantidad_requerida: 1.0
+      }
+    ]
   }
 ];
 
@@ -351,5 +410,134 @@ export const apiService = {
       };
     }
     throw new Error('Consulta no encontrada');
+  },
+
+  // Catálogo de Productos y Recetas (Fase 2)
+  async getProductos(categoria?: string): Promise<Producto[]> {
+    try {
+      const params = new URLSearchParams();
+      if (categoria && categoria !== 'TODOS') params.append('categoria', categoria);
+      const url = `${API_BASE_URL}/productos${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await fetch(url);
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    let resultado = DEMO_PRODUCTOS.filter(p => p.activo !== false);
+    if (categoria && categoria !== 'TODOS') {
+      resultado = resultado.filter(p => p.categoria.toUpperCase() === categoria.toUpperCase());
+    }
+    return resultado;
+  },
+
+  async crearProducto(data: CrearProductoDTO): Promise<Producto> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/productos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    // Autogeneración en frontend si backend no responde
+    const palabras = data.nombre.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase().split(/\s+/).filter(w => w.length >= 3);
+    const prefix = palabras.length > 0 ? palabras[0].substring(0, 3) : 'GEN';
+    const existentes = DEMO_PRODUCTOS.filter(p => p.codigo.startsWith(`PROD-${prefix}-`));
+    const nextNum = existentes.length + 1;
+    const codigoFinal = data.codigo?.trim() || `PROD-${prefix}-${String(nextNum).padStart(2, '0')}`;
+
+    // Mapear insumos en la receta
+    const recetaMapeada: ProductoInsumoItem[] = data.receta.map((r, idx) => {
+      const insumo = DEMO_INSUMOS.find(i => i.id === r.insumo_id);
+      return {
+        id: `pi-${Date.now()}-${idx}`,
+        insumo_id: r.insumo_id,
+        insumo_codigo: insumo?.codigo || 'INS-GEN',
+        insumo_nombre: insumo?.nombre || 'Insumo',
+        unidad_medida: insumo?.unidad_medida || 'UND',
+        costo_unitario: insumo?.costo_unitario || 0.0,
+        cantidad_requerida: Number(r.cantidad_requerida)
+      };
+    });
+
+    const costoInsumos = recetaMapeada.reduce((acc, it) => acc + (it.costo_unitario || 0) * it.cantidad_requerida, 0);
+
+    const nuevo: Producto = {
+      id: `prod-${Date.now()}`,
+      codigo: codigoFinal,
+      nombre: data.nombre.trim(),
+      descripcion: data.descripcion?.trim(),
+      categoria: data.categoria.toUpperCase(),
+      precio_base: Number(data.precio_base),
+      tiempo_estimado_horas: Number(data.tiempo_estimado_horas || 24),
+      imagen_url: data.imagen_url,
+      activo: true,
+      receta: recetaMapeada,
+      costo_insumos_total: round2(costoInsumos),
+      margen_estimado: round2(Number(data.precio_base) - costoInsumos),
+      created_at: new Date().toISOString()
+    };
+    DEMO_PRODUCTOS.push(nuevo);
+    return nuevo;
+  },
+
+  async actualizarRecetaProducto(id: string, items: { insumo_id: string; cantidad_requerida: number }[]): Promise<Producto> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/productos/${id}/receta`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const p = DEMO_PRODUCTOS.find(prod => prod.id === id);
+    if (p) {
+      p.receta = items.map((r, idx) => {
+        const insumo = DEMO_INSUMOS.find(i => i.id === r.insumo_id);
+        return {
+          id: `pi-${Date.now()}-${idx}`,
+          insumo_id: r.insumo_id,
+          insumo_codigo: insumo?.codigo || 'INS-GEN',
+          insumo_nombre: insumo?.nombre || 'Insumo',
+          unidad_medida: insumo?.unidad_medida || 'UND',
+          costo_unitario: insumo?.costo_unitario || 0.0,
+          cantidad_requerida: Number(r.cantidad_requerida)
+        };
+      });
+      const costo = p.receta.reduce((acc, it) => acc + (it.costo_unitario || 0) * it.cantidad_requerida, 0);
+      p.costo_insumos_total = round2(costo);
+      p.margen_estimado = round2(p.precio_base - costo);
+      return p;
+    }
+    throw new Error('Producto no encontrado');
+  },
+
+  async eliminarProducto(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/productos/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback
+    }
+
+    const idx = DEMO_PRODUCTOS.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      DEMO_PRODUCTOS.splice(idx, 1);
+      return true;
+    }
+    return false;
   }
 };
+
+function round2(num: number): number {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}
