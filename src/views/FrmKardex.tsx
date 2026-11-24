@@ -56,11 +56,13 @@ export const FrmKardex: React.FC = () => {
       {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Package className="w-7 h-7 text-brand-600" />
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-slate-950 text-brand-400 flex items-center justify-center border border-brand-500/30">
+              <Package className="w-5 h-5 text-brand-400" />
+            </div>
             Kardex de Inventario (CU06 / CU07)
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-slate-500 mt-1">
             Control de insumos base, recetas y alertas de stock mínimo para R&M Personaliza.
           </p>
         </div>
@@ -131,7 +133,7 @@ export const FrmKardex: React.FC = () => {
                 </div>
                 <button
                   onClick={() => { setInsumoSeleccionado(i); setModalAbierto(true); }}
-                  className="px-3 py-1.5 bg-brand-50 text-brand-700 font-medium rounded-lg text-xs hover:bg-brand-100 flex items-center gap-1"
+                  className="px-3 py-1.5 bg-amber-50 hover:bg-brand-500 text-amber-900 hover:text-slate-950 font-bold rounded-lg text-xs transition-all flex items-center gap-1 border border-amber-200/60"
                 >
                   <PlusCircle className="w-3.5 h-3.5" /> Entrada
                 </button>
@@ -194,7 +196,7 @@ export const FrmKardex: React.FC = () => {
                   <td className="px-5 py-3.5 text-right">
                     <button
                       onClick={() => { setInsumoSeleccionado(i); setModalAbierto(true); }}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-medium rounded-lg text-xs transition-colors inline-flex items-center gap-1"
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-brand-500 text-slate-700 hover:text-slate-950 font-bold rounded-lg text-xs transition-all inline-flex items-center gap-1 border border-slate-200 hover:border-brand-500"
                     >
                       <PlusCircle className="w-3.5 h-3.5" /> Registrar Entrada
                     </button>
@@ -263,7 +265,7 @@ export const FrmKardex: React.FC = () => {
                 <button
                   type="submit"
                   disabled={cargando}
-                  className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-400 hover:to-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-md shadow-brand-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   {cargando ? 'Guardando...' : 'Confirmar Ingreso al Kardex'}
                 </button>

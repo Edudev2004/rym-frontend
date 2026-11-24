@@ -33,25 +33,28 @@ export const FrmDashboard: React.FC<Props> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-6 pb-20 md:pb-6">
-      {/* Saludo y bienvenida */}
-      <div className="bg-gradient-to-r from-brand-600 to-rose-700 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/10">
-        <span className="text-xs font-semibold bg-white/20 px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">
+      {/* Saludo y bienvenida con elegancia en Negro y Dorado */}
+      <div className="bg-gradient-to-r from-slate-950 via-[#111622] to-black border border-brand-500/30 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-black/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <span className="text-xs font-bold bg-brand-500/15 text-brand-400 border border-brand-500/30 px-3.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm inline-flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
           MVP R&M Personaliza — Fase 1
         </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold mt-3 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-black mt-3 tracking-tight text-white">
           Panel de Control Operativo
         </h1>
-        <p className="text-rose-100 text-sm mt-1 max-w-xl">
+        <p className="text-slate-300 text-sm mt-1 max-w-xl">
           Monitoreo en tiempo real de recepción, fabricación, kardex de insumos y comprobantes de pago.
         </p>
 
         {/* Acciones Rápidas */}
-        <div className="mt-5 flex flex-wrap gap-2.5">
+        <div className="mt-6 flex flex-wrap gap-2.5">
           <button
             onClick={() => onNavigate('kardex')}
-            className="px-4 py-2 bg-white text-brand-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-400 hover:to-amber-400 text-slate-950 font-black rounded-xl text-xs transition-all shadow-md shadow-brand-500/20 flex items-center gap-2 cursor-pointer active:scale-95"
           >
-            <Package className="w-4 h-4" /> Ver Kardex & Stock
+            <Package className="w-4 h-4" /> Ver Kardex & Stock de Insumos
           </button>
         </div>
       </div>

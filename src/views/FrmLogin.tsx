@@ -35,23 +35,29 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center items-center px-4 py-8 relative overflow-hidden">
-      {/* Luces de fondo decorativas */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-rose-600/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen bg-[#07090e] flex flex-col justify-center items-center px-4 py-8 relative overflow-hidden">
+      {/* Resplandor dorado de fondo */}
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-amber-400/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div className="max-w-md w-full bg-slate-800/90 backdrop-blur-xl border border-slate-700/60 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 space-y-6">
-        {/* Cabecera / Identidad de la Marca */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex w-14 h-14 rounded-2xl bg-brand-600 text-white font-black text-2xl items-center justify-center shadow-lg shadow-brand-500/30">
-            R&M
+      <div className="max-w-md w-full bg-[#10141d]/90 backdrop-blur-2xl border border-brand-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black relative z-10 space-y-6">
+        {/* Cabecera / Logotipo Oficial de la Marca */}
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
+            <img
+              src="/logo.png"
+              alt="R&M Personaliza"
+              className="w-24 h-24 object-contain drop-shadow-[0_0_20px_rgba(212,175,55,0.45)]"
+            />
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">
-            R&M Personaliza
-          </h1>
-          <p className="text-xs text-slate-400">
-            Sistema Integral de Gestión, Kardex y Producción
-          </p>
+          <div>
+            <h1 className="text-2xl font-black text-white tracking-tight">
+              R&M Personaliza
+            </h1>
+            <p className="text-xs text-brand-400/90 font-medium mt-0.5 tracking-wide">
+              Sistema Integral de Gestión, Kardex y Producción
+            </p>
+          </div>
         </div>
 
         {/* Mensaje de Error si aplica */}
@@ -69,14 +75,14 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               Correo Electrónico
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-brand-400/70 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
                 value={correo}
                 onChange={e => setCorreo(e.target.value)}
                 placeholder="ejemplo@rympersonaliza.pe"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500"
+                className="w-full pl-10 pr-4 py-2.5 bg-black/50 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all"
               />
             </div>
           </div>
@@ -86,14 +92,14 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               Contraseña
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-brand-400/70 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/60 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500"
+                className="w-full pl-10 pr-4 py-2.5 bg-black/50 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all"
               />
             </div>
           </div>
@@ -101,16 +107,16 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
           <button
             type="submit"
             disabled={cargando}
-            className="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-400 hover:to-amber-400 text-slate-950 font-black rounded-xl text-sm transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
           >
             {cargando ? 'Iniciando sesión...' : 'Ingresar al Sistema'}
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 stroke-[3]" />
           </button>
         </form>
 
         {/* Selector Rápido por Rol para Sustentación / Demo */}
-        <div className="pt-2 border-t border-slate-700/60 space-y-3">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center flex items-center justify-center gap-1.5">
+        <div className="pt-2 border-t border-slate-800 space-y-3">
+          <p className="text-[11px] font-semibold text-brand-400/90 uppercase tracking-wider text-center flex items-center justify-center gap-1.5">
             <UserCheck className="w-3.5 h-3.5 text-brand-400" />
             Acceso Rápido por Rol (Demostración)
           </p>
@@ -120,8 +126,8 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               onClick={() => seleccionarRolRapido('admin@rympersonaliza.pe', 'ADMINISTRADOR')}
               className={`p-2 rounded-xl border text-left transition-all ${
                 correo === 'admin@rympersonaliza.pe'
-                  ? 'bg-brand-600/20 border-brand-500 text-white font-semibold'
-                  : 'bg-slate-900/40 border-slate-700/50 text-slate-400 hover:text-slate-200'
+                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
               }`}
             >
               <div className="font-bold text-[11px] text-brand-400">ADMINISTRADOR</div>
@@ -133,11 +139,11 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               onClick={() => seleccionarRolRapido('marketing@rympersonaliza.pe', 'MARKETING')}
               className={`p-2 rounded-xl border text-left transition-all ${
                 correo === 'marketing@rympersonaliza.pe'
-                  ? 'bg-brand-600/20 border-brand-500 text-white font-semibold'
-                  : 'bg-slate-900/40 border-slate-700/50 text-slate-400 hover:text-slate-200'
+                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
               }`}
             >
-              <div className="font-bold text-[11px] text-amber-400">MARKETING</div>
+              <div className="font-bold text-[11px] text-amber-300">MARKETING</div>
               <div className="truncate text-[10px]">Valeria Rios</div>
             </button>
 
@@ -146,11 +152,11 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               onClick={() => seleccionarRolRapido('diseno@rympersonaliza.pe', 'DISENADOR')}
               className={`p-2 rounded-xl border text-left transition-all ${
                 correo === 'diseno@rympersonaliza.pe'
-                  ? 'bg-brand-600/20 border-brand-500 text-white font-semibold'
-                  : 'bg-slate-900/40 border-slate-700/50 text-slate-400 hover:text-slate-200'
+                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
               }`}
             >
-              <div className="font-bold text-[11px] text-blue-400">DISEÑADOR</div>
+              <div className="font-bold text-[11px] text-brand-300">DISEÑADOR</div>
               <div className="truncate text-[10px]">Carlos Mendez</div>
             </button>
 
@@ -159,8 +165,8 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
               onClick={() => seleccionarRolRapido('produccion@rympersonaliza.pe', 'OPERADOR')}
               className={`p-2 rounded-xl border text-left transition-all ${
                 correo === 'produccion@rympersonaliza.pe'
-                  ? 'bg-brand-600/20 border-brand-500 text-white font-semibold'
-                  : 'bg-slate-900/40 border-slate-700/50 text-slate-400 hover:text-slate-200'
+                  ? 'bg-brand-500/15 border-brand-500 text-white font-semibold shadow-sm'
+                  : 'bg-black/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
               }`}
             >
               <div className="font-bold text-[11px] text-emerald-400">OPERADOR</div>
@@ -172,7 +178,7 @@ export const FrmLogin: React.FC<Props> = ({ onLogin }) => {
         {/* Footer de Seguridad */}
         <div className="text-center">
           <p className="text-[10px] text-slate-500 flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
+            <ShieldCheck className="w-3.5 h-3.5 text-brand-400/80" />
             Autenticación JWT con Control de Acceso por Roles (ModSeguridad)
           </p>
         </div>
