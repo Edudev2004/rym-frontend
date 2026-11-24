@@ -3,6 +3,7 @@ import { FrmDashboard } from './views/FrmDashboard';
 import { FrmKardex } from './views/FrmKardex';
 import { FrmConsultas } from './views/FrmConsultas';
 import { FrmProductos } from './views/FrmProductos';
+import { FrmClientes } from './views/FrmClientes';
 import { FrmLogin } from './views/FrmLogin';
 import { Navbar } from './components/Navbar';
 import { Usuario, AlertaStock } from './types';
@@ -12,6 +13,7 @@ import {
   Package,
   MessageSquare,
   Sparkles,
+  Users,
   ShoppingCart,
   Hammer,
   Receipt,
@@ -25,7 +27,7 @@ export default function App() {
     const saved = localStorage.getItem('rym_usuario');
     return saved ? JSON.parse(saved) : null;
   });
-  const [vistaActual, setVistaActual] = useState<'dashboard' | 'kardex' | 'consultas' | 'productos' | 'pedidos' | 'produccion' | 'comprobantes'>('dashboard');
+  const [vistaActual, setVistaActual] = useState<'dashboard' | 'kardex' | 'consultas' | 'productos' | 'clientes' | 'pedidos' | 'produccion' | 'comprobantes'>('dashboard');
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
   const [alertas, setAlertas] = useState<AlertaStock[]>([]);
 
@@ -63,6 +65,7 @@ export default function App() {
   const navegacion = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'consultas', label: 'Consultas (CU01)', icon: MessageSquare },
+    { id: 'clientes', label: 'Clientes (Directorio)', icon: Users },
     { id: 'kardex', label: 'Kardex / Insumos', icon: Package },
     { id: 'productos', label: 'Catálogo & Recetas', icon: Sparkles },
     { id: 'pedidos', label: 'Pedidos (CU02)', icon: ShoppingCart, badge: 'Fase 3' },
@@ -120,7 +123,7 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'dashboard' || item.id === 'kardex' || item.id === 'consultas' || item.id === 'productos') {
+                    if (item.id === 'dashboard' || item.id === 'kardex' || item.id === 'consultas' || item.id === 'productos' || item.id === 'clientes') {
                       setVistaActual(item.id as any);
                     } else {
                       alert(`El módulo '${item.label}' corresponde a la ${item.badge} del roadmap.`);
@@ -198,6 +201,9 @@ export default function App() {
           )}
           {vistaActual === 'productos' && (
             <FrmProductos onNavigate={(v) => setVistaActual(v as any)} />
+          )}
+          {vistaActual === 'clientes' && (
+            <FrmClientes onNavigate={(v) => setVistaActual(v as any)} />
           )}
         </main>
       </div>
