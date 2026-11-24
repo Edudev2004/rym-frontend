@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Insumo } from '../types';
 import { apiService } from '../services/api';
-import { Package, AlertTriangle, PlusCircle, ArrowUpRight, Search, CheckCircle } from 'lucide-react';
+import { Package, AlertTriangle, PlusCircle, Search, CheckCircle } from 'lucide-react';
 
 export const FrmKardex: React.FC = () => {
   const [insumos, setInsumos] = useState<Insumo[]>([]);

@@ -6,10 +6,7 @@ import {
   Hammer,
   AlertTriangle,
   TrendingUp,
-  MessageSquare,
   Package,
-  PlusCircle,
-  FileCheck,
   ChevronRight
 } from 'lucide-react';
 

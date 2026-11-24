@@ -2,7 +2,7 @@
  * Cliente HTTP y Servicio de Integración con Backend FastAPI
  * Incluye fallback inteligente para pruebas frontend autónomas.
  */
-import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario } from '../types';
+import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
