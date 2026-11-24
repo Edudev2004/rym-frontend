@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FrmDashboard } from './views/FrmDashboard';
 import { FrmKardex } from './views/FrmKardex';
+import { FrmConsultas } from './views/FrmConsultas';
 import { FrmLogin } from './views/FrmLogin';
 import { Navbar } from './components/Navbar';
 import { Usuario, AlertaStock } from './types';
@@ -59,8 +60,8 @@ export default function App() {
 
   const navegacion = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'consultas', label: 'Consultas (CU01)', icon: MessageSquare },
     { id: 'kardex', label: 'Kardex / Insumos', icon: Package },
-    { id: 'consultas', label: 'Consultas (CU01)', icon: MessageSquare, badge: 'Fase 2' },
     { id: 'pedidos', label: 'Pedidos (CU02)', icon: ShoppingCart, badge: 'Fase 3' },
     { id: 'produccion', label: 'Producción (CU05)', icon: Hammer, badge: 'Fase 3' },
     { id: 'comprobantes', label: 'Facturación (CU08)', icon: Receipt, badge: 'Fase 4' },
@@ -116,7 +117,7 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'dashboard' || item.id === 'kardex') {
+                    if (item.id === 'dashboard' || item.id === 'kardex' || item.id === 'consultas') {
                       setVistaActual(item.id as any);
                     } else {
                       alert(`El módulo '${item.label}' corresponde a la ${item.badge} del roadmap.`);
@@ -186,6 +187,9 @@ export default function App() {
           {vistaActual === 'dashboard' && (
             <FrmDashboard onNavigate={(v) => setVistaActual(v as any)} />
           )}
+          {vistaActual === 'consultas' && (
+            <FrmConsultas onNavigate={(v) => setVistaActual(v as any)} />
+          )}
           {vistaActual === 'kardex' && (
             <FrmKardex onInsumoActualizado={cargarAlertas} />
           )}
@@ -202,6 +206,15 @@ export default function App() {
         >
           <LayoutDashboard className="w-5 h-5" />
           <span>Inicio</span>
+        </button>
+        <button
+          onClick={() => setVistaActual('consultas')}
+          className={`flex flex-col items-center gap-1 text-[11px] font-medium py-1 px-3 rounded-lg transition-colors cursor-pointer ${
+            vistaActual === 'consultas' ? 'text-[#D4AF37] font-bold' : 'text-slate-400'
+          }`}
+        >
+          <MessageSquare className="w-5 h-5" />
+          <span>Consultas</span>
         </button>
         <button
           onClick={() => setVistaActual('kardex')}

@@ -2,7 +2,7 @@
  * Cliente HTTP y Servicio de Integración con Backend FastAPI
  * Incluye fallback inteligente para pruebas frontend autónomas.
  */
-import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO } from '../types';
+import { Insumo, AlertaStock, MovimientoKardex, DashboardMetricas, Usuario, CrearInsumoDTO, Consulta, CrearConsultaDTO } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -46,6 +46,38 @@ const DEMO_INSUMOS: Insumo[] = [
     esta_en_alerta: true,
     estado_alerta: "CRITICO_ROJO",
     activo: true
+  }
+];
+
+// Consultas iniciales de demostración
+const DEMO_CONSULTAS: Consulta[] = [
+  {
+    id: "44444444-4444-4444-4444-444444444401",
+    canal: "WHATSAPP",
+    remitente_nombre: "Lucero Falcon",
+    remitente_contacto: "+51944556677",
+    mensaje: "Hola, buenas tardes, quisiera cotizar 3 tazas mágicas para aniversario con fotos familiares.",
+    estado: "PENDIENTE",
+    fecha_recepcion: new Date(Date.now() - 3600000 * 2).toISOString()
+  },
+  {
+    id: "44444444-4444-4444-4444-444444444402",
+    canal: "FACEBOOK",
+    remitente_nombre: "Marcos Benitez",
+    remitente_contacto: "fb.me/mbenitez99",
+    mensaje: "Buenas, hacen envíos a San Martín de Porres hoy mismo si pido una taza blanca?",
+    estado: "PENDIENTE",
+    fecha_recepcion: new Date(Date.now() - 3600000 * 5).toISOString()
+  },
+  {
+    id: "44444444-4444-4444-4444-444444444403",
+    canal: "TIKTOK",
+    remitente_nombre: "kary_crafts",
+    remitente_contacto: "@kary_crafts",
+    mensaje: "Hola vi su video en TikTok del polo con foto de perrito, cuánto demora la entrega?",
+    estado: "ATENDIDA",
+    fecha_recepcion: new Date(Date.now() - 3600000 * 24).toISOString(),
+    fecha_atencion: new Date(Date.now() - 3600000 * 20).toISOString()
   }
 ];
 
@@ -215,5 +247,109 @@ export const apiService = {
         activo: true
       }
     };
+  },
+
+  // Consultas Multicanal (CU01)
+  async getConsultas(canal?: string, estado?: string): Promise<Consulta[]> {
+    try {
+      const params = new URLSearchParams();
+      if (canal && canal !== 'TODOS') params.append('canal', canal);
+      if (estado && estado !== 'TODOS') params.append('estado', estado);
+      const url = `${API_BASE_URL}/consultas${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await fetch(url);
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    let resultado = [...DEMO_CONSULTAS];
+    if (canal && canal !== 'TODOS') {
+      resultado = resultado.filter(c => c.canal.toUpperCase() === canal.toUpperCase());
+    }
+    if (estado && estado !== 'TODOS') {
+      resultado = resultado.filter(c => c.estado.toUpperCase() === estado.toUpperCase());
+    }
+    return resultado;
+  },
+
+  async crearConsulta(data: CrearConsultaDTO): Promise<Consulta> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/consultas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const nueva: Consulta = {
+      id: `cons-${Date.now()}`,
+      canal: data.canal,
+      remitente_nombre: data.remitente_nombre.trim(),
+      remitente_contacto: data.remitente_contacto.trim(),
+      mensaje: data.mensaje.trim(),
+      estado: 'PENDIENTE',
+      cliente_id: data.cliente_id,
+      fecha_recepcion: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    };
+    DEMO_CONSULTAS.unshift(nueva);
+    return nueva;
+  },
+
+  async actualizarEstadoConsulta(id: string, nuevoEstado: 'PENDIENTE' | 'ATENDIDA' | 'CANCELADA'): Promise<Consulta> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/consultas/${id}/estado`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: nuevoEstado })
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const c = DEMO_CONSULTAS.find(item => item.id === id);
+    if (c) {
+      c.estado = nuevoEstado;
+      if (nuevoEstado === 'ATENDIDA') {
+        c.fecha_atencion = new Date().toISOString();
+      }
+      return c;
+    }
+    throw new Error('Consulta no encontrada');
+  },
+
+  async convertirConsultaAPedido(id: string): Promise<any> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/consultas/${id}/convertir`, {
+        method: 'POST'
+      });
+      if (res.ok) return await res.json();
+    } catch {
+      // Fallback
+    }
+
+    const c = DEMO_CONSULTAS.find(item => item.id === id);
+    if (c) {
+      c.estado = 'ATENDIDA';
+      c.fecha_atencion = new Date().toISOString();
+      return {
+        mensaje: 'Consulta convertida a pedido con éxito',
+        consulta_id: c.id,
+        cliente_sugerido: {
+          nombres: c.remitente_nombre,
+          telefono: c.remitente_contacto,
+          canal_contacto: c.canal
+        },
+        detalle_pedido_sugerido: {
+          canal_origen: c.canal,
+          notas: `Pedido generado desde consulta: ${c.mensaje}`
+        }
+      };
+    }
+    throw new Error('Consulta no encontrada');
   }
 };

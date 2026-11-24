@@ -73,3 +73,29 @@ export interface DashboardMetricas {
   consultas_pendientes: number;
   total_ventas_mes: number;
 }
+
+export type CanalContacto = 'WHATSAPP' | 'FACEBOOK' | 'TIKTOK' | 'PRESENCIAL' | 'OTRO';
+export type EstadoConsulta = 'PENDIENTE' | 'ATENDIDA' | 'CANCELADA';
+
+export interface Consulta {
+  id: string;
+  canal: CanalContacto;
+  remitente_nombre: string;
+  remitente_contacto: string;
+  mensaje: string;
+  estado: EstadoConsulta;
+  cliente_id?: string;
+  pedido_id?: string;
+  usuario_atencion_id?: string;
+  fecha_recepcion?: string;
+  fecha_atencion?: string;
+  created_at?: string;
+}
+
+export interface CrearConsultaDTO {
+  canal: CanalContacto;
+  remitente_nombre: string;
+  remitente_contacto: string;
+  mensaje: string;
+  cliente_id?: string;
+}
