@@ -14,15 +14,13 @@
   --gold-bg-subtle: rgba(212, 175, 55, 0.12);
   --gold-border: rgba(212, 175, 55, 0.40);
 
-  /* Negro Carbón / Fondos */
-  --bg-main: #07090E;
+  /* Negro Carbón / Fondos Sidebar */
   --bg-sidebar: #0A0A0C;
-  --bg-card: #12151E;
-  --border-dark: #242938;
+  --border-sidebar: #1E2028;
 
-  /* Blanco */
-  --text-white: #FFFFFF;
-  --text-muted: #9CA3AF;
+  /* Fondo Blanco Panel Principal */
+  --bg-panel: #F8F9FA;
+  --bg-card: #FFFFFF;
 }
 
 /* Clases utilitarias directas con colores fijos */
@@ -54,8 +52,8 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #07090E !important;
-  color: #FFFFFF !important;
+  background-color: #F8F9FA;
+  color: #0F172A;
 }
 
 ::-webkit-scrollbar {
@@ -63,7 +61,7 @@ html, body, #root {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0C;
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
   background: #D4AF37;
